@@ -8,7 +8,7 @@
     ],
     "web_accessible_resources": [
         {
-            "resources": ["inject.js"],
+            "resources": ["inject.js", "assets/*.mp3", "assets/*.wav"],
             "matches": ["<all_urls>"]
           }
     ],

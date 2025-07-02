@@ -48,6 +48,7 @@ async function fillFormWithData(data) {
     // 填充各个字段
     document.getElementById('concert-name').value = data['concert-name'] || '';
     document.getElementById('concert-id').value = data['concert-id'] || '';
+    document.getElementById('phone').value = data.phone || '';
     document.getElementById('ticket').value = data.ticket || '1';
     document.getElementById('date').value = data.date || '';
     document.getElementById('time').value = data.time || '';

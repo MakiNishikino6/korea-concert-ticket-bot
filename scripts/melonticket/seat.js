@@ -157,6 +157,19 @@ async function searchSeat(data) {
     await searchSeat(data);
 }
 
+async function fillInfoAndProceed() {
+    try {
+        let frame = theFrame();
+        let concertId = getConcertId();
+        frame.document.getElementById("nextPayment").click();
+        await sleep(1000);
+        frame = theFrame();
+        await autoFillPhoneNumber(concertId);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 async function waitFirstLoad() {
     let concertId = getConcertId();
     let data = await get_stored_value(concertId);

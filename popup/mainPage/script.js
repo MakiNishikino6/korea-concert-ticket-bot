@@ -22,14 +22,33 @@ function createConcertItem(booking, index) {
     div.classList.add("booking-item");
     div.setAttribute("data-index", index);
 
+    // 创建按钮容器
+    let buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("button-container");
+
+    // 编辑按钮
+    let editButton = document.createElement("button");
+    editButton.classList.add("edit-button");
+    editButton.innerHTML = "&#9998;"; // 编辑符号
+    editButton.title = "Edit";
+    editButton.addEventListener("click", async(event) => {
+        event.stopPropagation();
+        let dataIndex = event.currentTarget.parentNode.parentNode.getAttribute("data-index");
+        await editConcertItem(dataIndex);
+    });
+
     let deleteButton = document.createElement("button");
     deleteButton.classList.add("delete-button");
     deleteButton.innerHTML = "&#10006;"; // Cross symbol
+    deleteButton.title = "Delete";
     deleteButton.addEventListener("click", async(event) => {
         event.stopPropagation(); // Prevent the click event from propagating
-        let dataIndex = event.currentTarget.parentNode.getAttribute("data-index");
+        let dataIndex = event.currentTarget.parentNode.parentNode.getAttribute("data-index");
         await deleteConcertItem(dataIndex);
     });
+
+    buttonContainer.appendChild(editButton);
+    buttonContainer.appendChild(deleteButton);
 
     let concertInfo = document.createElement("div");
     concertInfo.classList.add("concert-info");
@@ -62,7 +81,7 @@ function createConcertItem(booking, index) {
 
     div.appendChild(concertInfo);
     div.appendChild(platformImage);
-    div.appendChild(deleteButton);
+    div.appendChild(buttonContainer);
 
     div.addEventListener("click", () => {
         openBookingUrl(booking.platform, booking["concert-id"]);
@@ -113,6 +132,35 @@ async function deleteConcertItem(index) {
     }
 }
 
+async function editConcertItem(index) {
+    let autoBooking = await get_stored_value("autoBooking");
+    let concertItem = autoBooking[index];
+    
+    // 将要编辑的数据存储到临时键
+    store_value("editingConcertItem", {
+        data: concertItem,
+        index: index
+    });
+    
+    // 根据平台跳转到对应的编辑页面
+    let editUrl;
+    switch (concertItem.platform) {
+        case "melon":
+            editUrl = "../editForm/editMelon.html";
+            break;
+        case "yes24":
+            editUrl = "../editForm/editYes24.html";
+            break;
+        case "interpark":
+            editUrl = "../editForm/editInterpark.html";
+            break;
+        default:
+            console.error("Unknown platform");
+            return;
+    }
+    
+    window.location.href = editUrl;
+}
 
 function getPlatformImageSrc(platform) {
     switch (platform) {

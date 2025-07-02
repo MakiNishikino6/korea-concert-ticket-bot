@@ -39,10 +39,10 @@ function clickOnArea(area) {
 function playAudio() {
     try {
         // 方法1: 使用系统通知音效 (推荐)
-        playSystemNotification();
+        // playSystemNotification();
         
         // 方法2: 如果需要自定义音频，尝试创建音频上下文
-        // playCustomAudio();
+        playCustomAudio();
     } catch (error) {
         console.log('音频播放失败:', error);
     }
@@ -134,9 +134,7 @@ async function checkCaptchaFinish() {
     let frame = theFrame();
     await sleep(500);
     frame.document.getElementById("nextTicketSelection").click();
-
     playAudio();
-    
     return;
 }
 
@@ -165,6 +163,5 @@ async function waitFirstLoad() {
     await sleep(1000);
     searchSeat(data);
 }
-
 
 waitFirstLoad();

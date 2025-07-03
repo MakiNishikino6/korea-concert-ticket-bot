@@ -134,7 +134,6 @@ async function checkCaptchaFinish() {
     let frame = theFrame();
     await sleep(500);
     frame.document.getElementById("nextTicketSelection").click();
-    playAudio();
     return;
 }
 
@@ -174,8 +173,8 @@ async function fillInfoAndProceed() {
         cardSelect.value = "FOREIGN_CHINABANK";
         cardSelect.dispatchEvent(new Event('change', { bubbles: true }));
         frame.document.getElementById("chkAgreeAll").click();
-        await sleep(1000);
-        frame.document.getElementById("btnFinalPayment").click();
+        // await sleep(1000);
+        // frame.document.getElementById("btnFinalPayment").click();
         // await sleep(17000);
         // frame = theFrame();
         // frame.document.getElementById("all").click();
@@ -195,6 +194,7 @@ async function waitFirstLoad() {
     let data = await get_stored_value(concertId);
     await sleep(1000);
     searchSeat(data);
+    playAudio();
     await sleep(5000);
     await fillInfoAndProceed()
 }

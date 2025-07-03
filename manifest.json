@@ -35,14 +35,6 @@
             ],
             "js": ["scripts/common/hourToPm.js", "scripts/common/storage.js", "scripts/common/sleep.js", "scripts/common/phoneAutoFill.js", "scripts/melonticket/concert.js"],
             "run_at":"document_end"
-        },
-        {
-            "matches": [
-                "https://cashierbj.95516.com/b2c/index.action*",
-                "https://cashierbj.95516.com/b2c/index.action"
-            ],
-            "js": ["scripts/common/storage.js", "scripts/common/sleep.js", "scripts/melonticket/pay.js"],
-            "run_at":"document_end"
         }
     ],
     "action": {

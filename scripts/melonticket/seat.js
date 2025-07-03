@@ -176,15 +176,15 @@ async function fillInfoAndProceed() {
         frame.document.getElementById("chkAgreeAll").click();
         await sleep(1000);
         frame.document.getElementById("btnFinalPayment").click();
-        await sleep(17000);
-        frame = theFrame();
-        frame.document.getElementById("inputAll").click();
-        frame.document.getElementById("cardCode20").click();
-        await sleep(1000);
-        frame.document.getElementById("CardBtn").click();
-        await sleep(3000);
-        frame = theFrame();
-        frame.document.getElementById("UnionPayBtn").click();
+        // await sleep(17000);
+        // frame = theFrame();
+        // frame.document.getElementById("all").click();
+        // frame.document.getElementById("cardCode20").click();
+        // await sleep(1000);
+        // frame.document.getElementById("CardBtn").click();
+        // await sleep(3000);
+        // frame = theFrame();
+        // frame.document.getElementById("UnionPayBtn").click();
     } catch (error) {
         console.error(error);
     }
@@ -196,7 +196,7 @@ async function waitFirstLoad() {
     await sleep(1000);
     searchSeat(data);
     await sleep(5000);
-    fillInfoAndProceed()
+    await fillInfoAndProceed()
 }
 
 waitFirstLoad();

@@ -89,7 +89,7 @@ function playCustomAudio() {
         // 使用chrome.runtime.getURL获取扩展内文件的正确URL
         const audioUrl = chrome.runtime.getURL('assets/apple.mp3');
         const audio = new Audio(audioUrl);
-        audio.volume = 0.5;
+        audio.volume = 1;
         
         // 尝试播放，如果失败则不影响主流程
         audio.play().then(() => {
@@ -160,11 +160,31 @@ async function searchSeat(data) {
 async function fillInfoAndProceed() {
     try {
         let frame = theFrame();
-        let concertId = getConcertId();
+        console.log("click next payment");
         frame.document.getElementById("nextPayment").click();
         await sleep(1000);
         frame = theFrame();
+        let concertId = getConcertId();
+        sessionStorage.setItem('concertId', concertId);
         await autoFillPhoneNumber(concertId);
+        frame.document.getElementById("payMethodCode001").click();
+        await sleep(1000);
+        frame = theFrame();
+        let cardSelect = frame.document.getElementById("cardCode");
+        cardSelect.value = "FOREIGN_CHINABANK";
+        cardSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        frame.document.getElementById("chkAgreeAll").click();
+        await sleep(1000);
+        frame.document.getElementById("btnFinalPayment").click();
+        await sleep(17000);
+        frame = theFrame();
+        frame.document.getElementById("inputAll").click();
+        frame.document.getElementById("cardCode20").click();
+        await sleep(1000);
+        frame.document.getElementById("CardBtn").click();
+        await sleep(3000);
+        frame = theFrame();
+        frame.document.getElementById("UnionPayBtn").click();
     } catch (error) {
         console.error(error);
     }
@@ -175,6 +195,8 @@ async function waitFirstLoad() {
     let data = await get_stored_value(concertId);
     await sleep(1000);
     searchSeat(data);
+    await sleep(5000);
+    fillInfoAndProceed()
 }
 
 waitFirstLoad();

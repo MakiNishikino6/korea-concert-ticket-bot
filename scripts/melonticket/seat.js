@@ -193,7 +193,7 @@ async function waitFirstLoad() {
     let concertId = getConcertId();
     let data = await get_stored_value(concertId);
     await sleep(1000);
-    searchSeat(data);
+    await searchSeat(data);
     playAudio();
     await sleep(5000);
     await fillInfoAndProceed()

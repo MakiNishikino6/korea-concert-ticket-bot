@@ -1,4 +1,7 @@
 import { get_stored_value, store_value } from "../module/storage.js";
+import "../../scripts/common/sectionTargets.js";
+
+const { parseSectionInput } = globalThis.SectionTargetUtils;
 
 window.onclick = function(event) {
     const target = event.target;
@@ -20,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function  () {
         for (const [key, value] of formData.entries()) {
             data[key] = value;
         }
-        data["section"] = data["section"].split(",");
+        data["section"] = parseSectionInput(data["section"]);
         data["platform"] = form.getElementsByTagName("button")[0].id;
         let array = await get_stored_value("autoBooking") || [];
         store_value(data["concert-id"], data);

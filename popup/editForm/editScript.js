@@ -1,4 +1,7 @@
 import { get_stored_value, store_value, delete_value } from "../module/storage.js";
+import "../../scripts/common/sectionTargets.js";
+
+const { formatSectionInput, parseSectionInput } = globalThis.SectionTargetUtils;
 
 // 返回按钮点击事件
 window.onclick = function(event) {
@@ -53,12 +56,8 @@ async function fillFormWithData(data) {
     document.getElementById('date').value = data.date || '';
     document.getElementById('time').value = data.time || '';
     
-    // 处理section数组
-    if (Array.isArray(data.section)) {
-        document.getElementById('section').value = data.section.join(', ');
-    } else {
-        document.getElementById('section').value = data.section || '';
-    }
+    // 保留旧逗号格式，并让楼层 > 区域格式可正确往返编辑。
+    document.getElementById('section').value = formatSectionInput(data.section);
 }
 
 // 处理表单提交
@@ -77,7 +76,7 @@ async function handleFormSubmit(form, editingData) {
         }
         
         // 处理section数据
-        updatedData["section"] = updatedData["section"].split(",").map(s => s.trim());
+        updatedData["section"] = parseSectionInput(updatedData["section"]);
         updatedData["platform"] = submitButton.id;
 
         // 获取当前的autoBooking数组
@@ -111,4 +110,4 @@ async function handleFormSubmit(form, editingData) {
         submitButton.disabled = false;
         submitButton.textContent = "更新信息";
     }
-} 
+}

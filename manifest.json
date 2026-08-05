@@ -25,7 +25,7 @@
                 "https://tkglobal.melon.com/reservation/popup/onestop.htm/*",
                 "https://tkglobal.melon.com/reservation/popup/onestop.htm"
             ],
-            "js": ["scripts/common/storage.js", "scripts/common/sleep.js", "scripts/common/phoneAutoFill.js", "scripts/melonticket/seat.js"],
+            "js": ["scripts/common/storage.js", "scripts/common/sleep.js", "scripts/common/phoneAutoFill.js", "scripts/common/sectionTargets.js", "scripts/melonticket/seatSelection.js", "scripts/melonticket/seat.js"],
             "run_at":"document_end"
         },
         {

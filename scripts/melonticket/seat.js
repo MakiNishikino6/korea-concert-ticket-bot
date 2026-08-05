@@ -2,6 +2,9 @@ async function sleep(t) {
     return await new Promise(resolve => setTimeout(resolve, t));
 }
 
+const { parseSectionInput, parseSectionTarget } = globalThis.SectionTargetUtils;
+const { selectTarget, trySeatTargets } = globalThis.MelonSeatSelection;
+
 function theFrame() {
     if (window._theFrameInstance == null) {
       window._theFrameInstance = document.getElementById('oneStopFrame').contentWindow;
@@ -12,27 +15,6 @@ function theFrame() {
 
 function getConcertId() {
     return document.getElementById("prodId").value;
-}
-
-function openEverySection() {
-    let frame = theFrame();
-    let section = frame.document.getElementsByClassName("seat_name");
-    console.log(section);
-    for (let i = 0; i < section.length; i++) {
-        section[i].parentElement.click();
-    }
-}
-
-function clickOnArea(area) {
-    let frame = theFrame();
-    let section = frame.document.getElementsByClassName("area_tit");
-    for (let i = 0; i < section.length; i++) {
-        let reg = new RegExp(area + "\$","g");
-        if (section[i].innerHTML.match(reg)) {
-            section[i].parentElement.click();
-            return;
-        }
-    }
 }
 
 // 添加播放音频函数
@@ -103,11 +85,20 @@ function playCustomAudio() {
 }
 
 async function findSeat() {
+    await sleep(750);
     let frame = theFrame();
     let canvas = frame.document.getElementById("ez_canvas");
+    if (!canvas) {
+        return false;
+    }
+
     let seat = canvas.getElementsByTagName("rect");
+    const nextButton = frame.document.getElementById("nextTicketSelection");
+    if (!nextButton) {
+        return false;
+    }
+
     console.log(seat);
-    await sleep(750);
     for (let i = 0; i < seat.length; i++) {
         let fillColor = seat[i].getAttribute("fill");
     
@@ -117,7 +108,7 @@ async function findSeat() {
             var clickEvent = new Event('click', { bubbles: true });
 
             seat[i].dispatchEvent(clickEvent);
-            frame.document.getElementById("nextTicketSelection").click();
+            nextButton.click();
             
             return true;
         }
@@ -126,34 +117,62 @@ async function findSeat() {
 }
 
 async function checkCaptchaFinish() {
-    if (document.getElementById("certification").style.display != "none") {
+    while (true) {
+        const certification = document.getElementById("certification");
+        if (!certification || certification.style.display == "none") {
+            break;
+        }
         await sleep(1000);
-        checkCaptchaFinish();
-        return;
     }
+
     let frame = theFrame();
     await sleep(500);
-    frame.document.getElementById("nextTicketSelection").click();
-    return;
+    frame.document.getElementById("nextTicketSelection")?.click();
 }
 
 async function reload() {
     let frame = theFrame();
-    frame.document.getElementById("btnReloadSchedule").click();
+    const reloadButton = frame.document.getElementById("btnReloadSchedule");
+    if (!reloadButton) {
+        await sleep(1000);
+        return false;
+    }
+
+    reloadButton.click();
     await sleep(750);
+    return true;
 }
 
 async function searchSeat(data) {
-    for (sec of data.section) {
-        openEverySection();
-        clickOnArea(sec);
-        if (await findSeat()) {
-            checkCaptchaFinish();
-            return;
-        }
+    const targets = parseSectionInput(data?.section)
+        .map(parseSectionTarget)
+        .filter(Boolean);
+
+    if (targets.length === 0) {
+        console.error("No valid Melon seat targets configured");
+        return false;
     }
-    reload();
-    await searchSeat(data);
+
+    while (true) {
+        const matchedTarget = await trySeatTargets(
+            targets,
+            async target => {
+                const selected = await selectTarget(theFrame().document, target);
+                if (!selected) {
+                    console.warn("Melon seat target not found", target);
+                }
+                return selected;
+            },
+            findSeat,
+        );
+
+        if (matchedTarget) {
+            await checkCaptchaFinish();
+            return true;
+        }
+
+        await reload();
+    }
 }
 
 async function fillInfoAndProceed() {
@@ -193,10 +212,14 @@ async function waitFirstLoad() {
     let concertId = getConcertId();
     let data = await get_stored_value(concertId);
     await sleep(1000);
-    await searchSeat(data);
+    const seatFound = await searchSeat(data);
+    if (!seatFound) {
+        return;
+    }
+
     playAudio();
     await sleep(5000);
-    await fillInfoAndProceed()
+    await fillInfoAndProceed();
 }
 
 waitFirstLoad();

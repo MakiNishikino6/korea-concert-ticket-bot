@@ -1,4 +1,7 @@
 import { delete_value, get_stored_value, store_value } from "../module/storage.js";
+import "../../scripts/common/sectionTargets.js";
+
+const { formatSectionInput } = globalThis.SectionTargetUtils;
 
 let loadAutoBooking = async () => {
     let autoBooking = await get_stored_value("autoBooking");
@@ -66,7 +69,7 @@ function createConcertItem(booking, index) {
     time.textContent = `Time: ${booking.time || ""}`;
 
     let section = document.createElement("p");
-    section.textContent = `Sections: ${Array.isArray(booking.section) ? booking.section.join(", ") : ""}`;
+    section.textContent = `Sections: ${formatSectionInput(booking.section)}`;
 
     concertInfo.appendChild(concertName);
     concertInfo.appendChild(concertId);

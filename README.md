@@ -17,6 +17,8 @@ This Chrome extension streamlines the process of finding and booking concert tic
 - Open the extension popup and register for automatic booking on the global versions of Melon Ticket, Yes24, and Interpark.
 - Upon visiting a supported concert page on the global version of the platforms, the extension automates the booking process.
 
+For Melon Ticket, enter legacy section preferences as a comma-separated list such as `F1, F2`. To distinguish duplicate section names, use `Floor 2 > Sec A`; separate multiple exact targets with semicolons, for example `Floor 2 > Sec A; Floor 1 > Sec B`.
+
 > [!CAUTION]
 > Using this extension for automated booking may lead to a ban on the respective platforms. It is important to note that the developers of this extension are not responsible for any account bans or consequences that may arise from using the automated booking feature. Use at your own discretion.
 
@@ -30,6 +32,8 @@ This Chrome extension streamlines the process of finding and booking concert tic
 ### Script for Auto Booking
 - `melonticket`, `yes24`, `interpark `: JavaScript logic for executing auto booking on each site.
 - `common`: Utility scripts shared across platforms.
+
+Run the dependency-free unit tests with `node --test tests/*.test.js`.
 
 ## :camera_flash: Demo video :camera_flash:
 
